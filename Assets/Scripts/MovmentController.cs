@@ -8,6 +8,12 @@ public class MovmentController : MonoBehaviour
     [SerializeField]
     float speed = 5;
 
+    [SerializeField]
+    float jumpForce = 10;
+
+    [SerializeField]
+    float gravityMultiplier = 4;
+
     Vector2 inputVector = Vector2.zero;
     CharacterController CharacterController;
     
@@ -33,11 +39,11 @@ public class MovmentController : MonoBehaviour
 
         if(jumpPressed)
         {
-            velocityY = 20;
+            velocityY = jumpForce;
         }
     }
 
-    velocityY += Physics.gravity.y * Time.deltaTime;
+    velocityY += Physics.gravity.y * gravityMultiplier * Time.deltaTime;
 
     movment.y = velocityY;
 
