@@ -5,11 +5,10 @@ using UnityEngine;
 
 public class IntereActionController : MonoBehaviour
 {
-GameObject cameraObject;
+    GameObject cameraObject;
 
-GameObject gazeTarget;
+    GameObject gazeTarget;
 
-    // Start is called before the first frame update
     void Awake()
     {
         cameraObject = GetComponentInChildren<Camera>().gameObject;
@@ -18,27 +17,44 @@ GameObject gazeTarget;
     // Update is called once per frame
     void Update()
     {
+        GameObject OldGazeTarget = gazeTarget;
+
+        UptadeGaze();
+
+        if (OldGazeTarget != gazeTarget)
+        {
+            OldGazeTarget?.SendMessage("OnGazeExit",SendMessageOptions.DontRequireReceiver);
+            gazeTarget?.SendMessage("OnGazeEnter",SendMessageOptions.DontRequireReceiver);
+        }
+    }
+
+    private void UptadeGaze()
+    {
         RaycastHit hit;
         Physics.Raycast
         (
          cameraObject.transform.position,
          cameraObject.transform.forward,
-         out hit, 
-         1.5f
+         out hit,
+         3f
         );
 
-if(hit.collider != null)
-{
-    gazeTarget = hit.collider.gameObject;
-}
-else
-{
-    gazeTarget = null;
-}
-
+        if (hit.collider != null)
+        {
+            gazeTarget = hit.collider.gameObject;
+        }
+        else
+        {
+            gazeTarget = null;
+        }
     }
+
     void OnFire()
     {
-        gazeTarget?.SendMessage("OnInteract");
+        gazeTarget?.SendMessage
+        (
+          "OnInteract",
+           SendMessageOptions.DontRequireReceiver
+        );
     }
 }
